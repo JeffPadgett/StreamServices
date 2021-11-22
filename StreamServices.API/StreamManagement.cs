@@ -35,8 +35,8 @@ namespace StreamServices.API
         //Function is meant to pass the userId in and subtype
         [FunctionName("Subscribe")]
         public async Task<IActionResult> Subscribe([HttpTrigger(AuthorizationLevel.Anonymous,"post", Route = null)] HttpRequest req,
-            [Table("Tokens", Connection = "AzureWebJobsStorage")] CloudTable cloudTable,
-            [Table("Tokens", "Twitch", "1", Connection = "AzureWebJobsStorage")] AppAccessToken appAccessToken,
+            [Table("Tokens", Connection = "JobsStorage")] CloudTable cloudTable,
+            [Table("Tokens", "Twitch", "1", Connection = "JobsStorage")] AppAccessToken appAccessToken,
             ILogger log)
         {
             string body = await new StreamReader(req.Body).ReadToEndAsync();
@@ -73,8 +73,8 @@ namespace StreamServices.API
         [FunctionName("GetSubscriptions")]
         public async Task<IActionResult> GetSubscriptions(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            [Table("Tokens", Connection = "AzureWebJobsStorage")] CloudTable cloudTable,
-            [Table("Tokens", "Twitch", "1", Connection = "AzureWebJobsStorage")] AppAccessToken appAccessToken,
+            [Table("Tokens", Connection = "JobsStorage")] CloudTable cloudTable,
+            [Table("Tokens", "Twitch", "1", Connection = "JobsStorage")] AppAccessToken appAccessToken,
             ILogger log)
         {
             appAccessToken = await VerifyAccessToken(cloudTable, appAccessToken, log);
@@ -92,8 +92,8 @@ namespace StreamServices.API
         [FunctionName("DeleteEventSubsciption")]
         public async Task<IActionResult> DeleteEventSubsciption(
             [HttpTrigger(AuthorizationLevel.Function, "delete", Route = null)] HttpRequest req,
-            [Table("Tokens", Connection = "AzureWebJobsStorage")] CloudTable cloudTable,
-            [Table("Tokens", "Twitch", "1", Connection = "AzureWebJobsStorage")] AppAccessToken appAccessToken,
+            [Table("Tokens", Connection = "JobsStorage")] CloudTable cloudTable,
+            [Table("Tokens", "Twitch", "1", Connection = "JobsStorage")] AppAccessToken appAccessToken,
             ILogger log)
         {
             appAccessToken = await VerifyAccessToken(cloudTable, appAccessToken, log);
@@ -115,8 +115,8 @@ namespace StreamServices.API
         [FunctionName("CheckUserName")]
         public async Task<IActionResult> CheckUserName(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            [Table("Tokens", Connection = "AzureWebJobsStorage")] CloudTable cloudTable,
-            [Table("Tokens", "Twitch", "1", Connection = "AzureWebJobsStorage")] AppAccessToken appAccessToken,
+            [Table("Tokens", Connection = "JobsStorage")] CloudTable cloudTable,
+            [Table("Tokens", "Twitch", "1", Connection = "JobsStorage")] AppAccessToken appAccessToken,
             ILogger log)
         {
             appAccessToken = await VerifyAccessToken(cloudTable, appAccessToken, log);
