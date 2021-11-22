@@ -12,7 +12,6 @@
 		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.5" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\Desktop\OneLionStreamServices\LionStreamServicesSolution\StreamServices.Core\StreamServices.Core.csproj" />
 		<ProjectReference Include="..\StreamServices.Core\StreamServices.Core.csproj" />
 		<ProjectReference Include="..\StreamServices.Dto\StreamServices.Dto.csproj" />
 	</ItemGroup>

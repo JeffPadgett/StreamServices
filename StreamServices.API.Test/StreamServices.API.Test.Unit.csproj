@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Desktop\OneLionStreamServices\LionStreamServicesSolution\StreamServices.Core\StreamServices.Core.csproj" />
     <ProjectReference Include="..\StreamServices.API\StreamServices.API.csproj" />
     <ProjectReference Include="..\StreamServices.Core\StreamServices.Core.csproj" />
     <ProjectReference Include="..\StreamServices.Dto\StreamServices.Dto.csproj" />

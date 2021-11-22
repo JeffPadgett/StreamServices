@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\source\repos\BlazorTutorial\StreamServices.Dto\StreamServices.Dto.csproj" />
     <ProjectReference Include="..\StreamServices.Dto\StreamServices.Dto.csproj" />
   </ItemGroup>
 
