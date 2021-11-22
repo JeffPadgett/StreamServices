@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"/>
+        <MudText Typo="Typo.h5" Class="ml-3">Stream Services Bot</MudText>
+        <MudSpacer />
+        <AuthorizeView>
+            <Authorized>
+                Hello, @context.User.Identity?.Name!
+                <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="BeginLogout" >Log Out</MudButton>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton Variant="Variant.Text" Color="Color.Secondary" Link="authentication/login" >Sign In</MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudMainContent Class="ps-3 pe-3 my-5">
+        @Body
+    </MudMainContent>
+</MudLayout>
+@code {
+
+
+     private async Task BeginLogout(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+
+}

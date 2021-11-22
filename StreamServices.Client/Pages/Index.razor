@@ -1,0 +1,203 @@
+﻿@page "/"
+@using System.Text
+@using Microsoft.AspNetCore.Authorization
+@inject HttpClient _httpClient
+@inject IDialogService DialogService
+@attribute [Authorize]
+<PageTitle>Index</PageTitle>
+
+<MudPaper Class="pa-4 ma-2">
+    <MudGrid>
+
+        <MudItem xs="6">
+
+            <MudCard Class="mb-3">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudCheckBox @bind-Checked="@follow" Dense="true" Color="Color.Success">Follow</MudCheckBox>
+                    <MudCheckBox @bind-Checked="@raid" Dense="false" Color="Color.Primary">Raid</MudCheckBox>
+                    <MudCheckBox @bind-Checked="@streamOnline" Dense="true" Color="Color.Tertiary">Stream Online</MudCheckBox>
+                    <MudCheckBox @bind-Checked="@streamOffline" Dense="false" Color="Color.Warning">Stream Offline</MudCheckBox>
+                    @*<MudItem xs="12" sm="6" md="4">*@
+                        <MudTextField @bind-Value="streamerName" 
+                            Label="Streamer Name" 
+                            Variant="Variant.Outlined" 
+                            Placeholder="Channel Name..."  
+                            DebounceInterval=500
+                            OnDebounceIntervalElapsed="CheckValidName"/>
+                    @*</MudItem>*@
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@PostEventSub" Disabled="@(!enableSubmit)">Subscribe to Events!</MudButton>
+                </MudCardActions>
+            </MudCard>
+
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Results</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        @*<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />*@
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2">@foundUser.Login</MudText>
+                    <MudText Typo="Typo.body2">@foundUser.Description</MudText>
+                    <img src="@foundUser.ProfileImageUrl" />
+                </MudCardContent>
+                <MudCardActions>
+                  @*  <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>*@
+                </MudCardActions>
+            </MudCard>
+
+        </MudItem>
+
+        <MudItem xs="6">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Current Subscriptions</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTable Items="@subscribers" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable"
+                              T="SubscriptionDto">
+                        <HeaderContent>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Type</MudTh>
+                            <MudTh>Status</MudTh>
+                            <MudTh>Delete</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Namer">@context.Name</MudTd>
+                            <MudTd DataLabel="Type">@context.Type</MudTd>
+                            <MudTd DataLabel="Status">@context.Status</MudTd>
+                            <MudTd DataLabel="Delete">
+                                <MudIconButton OnClick="((e) => DeleteEventSub(context))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+                <MudCardActions>
+                    @* <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>*@
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+    </MudGrid>
+</MudPaper>
+
+@code {
+
+    List<SubscriptionDto> subscribers;
+    private MudTable<SubscriptionDto> mudTable;
+
+    private string streamerName;
+
+    bool follow;
+    bool raid;
+    bool streamOnline;
+    bool streamOffline;
+
+    TwitchUser foundUser = new();
+
+    bool enableSubmit = false;
+
+      /*
+     * Subscribe - post dto object
+     * GetSubscriptions 
+     * DeleteEventSubsciption -- pass query string param called id with SubEvent Id
+     * CheckUserName - pass string called name with channel name
+     */
+
+    protected override async Task OnInitializedAsync()
+    {
+        subscribers = new();
+        await RetrieveEventSubs();
+        await Task.Delay(0);
+    }
+
+
+    async Task RetrieveEventSubs()
+    {
+        var response = await _httpClient.GetAsync("api/GetSubscriptions");
+        var results = JsonConvert.DeserializeObject<List<SubscriptionDto>>(await response.Content.ReadAsStringAsync());
+        if(results != null && results.Count > 0)
+        {
+            subscribers = results;
+        }
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task PostEventSub()
+    {
+        enableSubmit = false;
+
+        if (follow)
+        {
+            foundUser.Action = "channel.follow";
+            await PostSub(foundUser);
+        }
+        if (raid)
+        {
+            foundUser.Action = "channel.raid";
+            await PostSub(foundUser);
+        }
+        if (streamOnline)
+        {
+            foundUser.Action = "stream.online";
+            await PostSub(foundUser);
+        }
+        if (streamOffline)
+        {
+            foundUser.Action = "stream.offline";
+            await PostSub(foundUser);
+        }
+        await RetrieveEventSubs();
+    }
+
+    async Task PostSub(TwitchUser twitchUser)
+    {
+        var content = new StringContent(JsonConvert.SerializeObject(twitchUser), Encoding.UTF8, "application/json");
+        await _httpClient.PostAsync("api/Subscribe", content);
+    }
+
+    async Task DeleteEventSub(SubscriptionDto subscription)
+    {
+        //var result = Dia
+
+        Console.WriteLine($"{subscription.Type} for {subscription.Name} deleted");
+        var response = await _httpClient.DeleteAsync($"api/DeleteEventSubsciption?id={subscription.Id}");
+        response.EnsureSuccessStatusCode();
+        subscribers.Remove(subscription);
+    }
+
+    async Task CheckValidName()
+    {
+        var response = await _httpClient.GetAsync($"api/CheckUserName?name={streamerName}");
+        var result = JsonConvert.DeserializeObject<TwitchUser>(await response.Content.ReadAsStringAsync());
+        if  (result is not null)
+        {
+            foundUser = result;
+            enableSubmit = true;
+        }
+        else
+        {
+            foundUser  = new();
+            enableSubmit = false;
+        }
+        await InvokeAsync(StateHasChanged);
+
+        Console.WriteLine("Debounce triggered");
+    }
+}
