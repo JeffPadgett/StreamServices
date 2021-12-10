@@ -8,7 +8,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddMudServices();
 
-string baseUri = builder.HostEnvironment.BaseAddress;
+string baseUri = "https://streamservicesclientcontroller.azurewebsites.net/";
 #if DEBUG
 baseUri = "http://localhost:7071";
 #endif
