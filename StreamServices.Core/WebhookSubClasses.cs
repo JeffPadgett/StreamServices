@@ -44,6 +44,20 @@ namespace StreamServices.Core
         public string Type { get; set; }
         [JsonProperty("started_at")]
         public DateTime StartedAt { get; set; }
+        [JsonProperty("from_broadcaster_user_id")]
+        public string FromBroadCasterUserId { get; set; }
+        [JsonProperty("from_broadcaster_user_login")]
+        public string FromBroadcasterUserLogin { get; set; }
+        [JsonProperty("from_broadcaster_user_name")]
+        public string FromBroadcasterUserName { get; set; }
+        [JsonProperty("to_broadcaster_user_id")]
+        public string ToBroadCasterUserId { get; set; }
+        [JsonProperty("to_broadcaster_user_login")]
+        public string ToBroadcasterUserLogin { get; set; }
+        [JsonProperty("to_broadcaster_user_name")]
+        public string ToBroadcasterUserName { get; set; }
+        [JsonProperty("viewers")]
+        public int ViewerCount { get; set; }
     }
 
 
