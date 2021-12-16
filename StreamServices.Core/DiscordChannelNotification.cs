@@ -12,7 +12,7 @@ namespace StreamServices.Core
             Content = message;
         }
         [JsonProperty("username")]
-        public string UserName { get; set; } = "BrokenSwordsBot";
+        public string UserName { get; set; } = "BrokenSwordsBot 1.1";
 
         [JsonProperty("avatar_url")]
         public string AvatarUrl { get; set; }

@@ -78,7 +78,7 @@ namespace StreamServices
             }
             else if (streamData.Subscription.Type == "channel.raid")
             {
-                return $"{streamData.Event.FromBroadcasterUserName} just raided ${streamData.Event.ToBroadcasterUserName}. They now have ${streamData.Event.ViewerCount.ToString()} total viewers.";
+                return $"{streamData.Event.FromBroadcasterUserName} just raided {streamData.Event.ToBroadcasterUserName}. They now have {streamData.Event.ViewerCount.ToString()} total viewers.";
             }
             else
             {
