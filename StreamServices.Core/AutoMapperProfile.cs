@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using StreamServices.Core;
+using StreamServices.Core.Extensions;
 using StreamServices.Dto;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace StreamServices.Core
 {
@@ -11,8 +8,9 @@ namespace StreamServices.Core
     {
         public AutoMapperProfile()
         {
+            //if they equal null or an empty string. 
             CreateMap<Subscription, SubscriptionDto>()
-                .ForMember(d => d.BroadcasterUserId, opt => opt.MapFrom(src => src.Condition.BroadcasterUserId));
+                .ForMember(d => d.BroadcasterUserId, opt => opt.MapFrom(src => src.Condition.BroadcasterUserId ?? src.Condition.FromBroadcasterUserId.NullIfEmpty() ?? src.Condition.ToBroadcasterUserId));
         }
     }
 }

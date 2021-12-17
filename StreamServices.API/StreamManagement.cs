@@ -81,10 +81,13 @@ namespace StreamServices.API
             AddAuthHeaderToTwichClient(_client, appAccessToken.AccessToken);
             var response = await _client.GetAsync("https://api.twitch.tv/helix/eventsub/subscriptions");
             response.EnsureSuccessStatusCode();
-            var sublist = JsonConvert.DeserializeObject<SubscriptionList>(await response.Content.ReadAsStringAsync());
-            var dtos = _mapper.Map<List<SubscriptionDto>>(sublist.Subscriptions);
-
-            dtos.ForEach(x => x.Name = _client.GetFromJsonAsync<TwitchUsers>($"users?id={x.BroadcasterUserId}").GetAwaiter().GetResult().Users[0].Login);
+            SubscriptionList sublist = JsonConvert.DeserializeObject<SubscriptionList>(await response.Content.ReadAsStringAsync());
+            List<SubscriptionDto> dtos = _mapper.Map<List<SubscriptionDto>>(sublist.Subscriptions);
+            foreach (var d in dtos)
+            {
+                d.Name = await GetUserNameForChannelId(d.BroadcasterUserId, appAccessToken);
+            }
+            //dtos.ForEach(x => x.Name = _client.GetFromJsonAsync<TwitchUsers>($"users?id={x.BroadcasterUserId}").GetAwaiter().GetResult().Users[0].Login);
 
             return new OkObjectResult(JsonConvert.SerializeObject(dtos));
         }

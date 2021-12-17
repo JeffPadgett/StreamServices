@@ -130,6 +130,8 @@
     async Task RetrieveEventSubs()
     {
         var response = await _httpClient.GetAsync("api/GetSubscriptions");
+        //GetSubscriptions
+        //GetSubscriptions
         var results = JsonConvert.DeserializeObject<List<SubscriptionDto>>(await response.Content.ReadAsStringAsync());
         if(results != null && results.Count > 0)
         {

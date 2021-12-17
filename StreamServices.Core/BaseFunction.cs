@@ -20,7 +20,10 @@ namespace StreamServices.Core
 
         public HttpClient GetHttpClient(string baseAddress, string clientId = "", bool includeJson = true, bool discordPost = false)
         {
-            if (clientId == "") clientId = Environment.GetEnvironmentVariable("ClientId");
+            if (clientId == "")
+            {
+                clientId = Environment.GetEnvironmentVariable("TwitchClientId");
+            }
 
             var client = HttpClientFactory.CreateClient();
             client.BaseAddress = new Uri(baseAddress);

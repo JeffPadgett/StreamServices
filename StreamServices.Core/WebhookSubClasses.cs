@@ -65,6 +65,10 @@ namespace StreamServices.Core
     {
         [JsonProperty("broadcaster_user_id")]
         public string BroadcasterUserId { get; set; }
+        [JsonProperty("to_broadcaster_user_id")]
+        public string ToBroadcasterUserId { get; set; }
+        [JsonProperty("from_broadcaster_user_id")]
+        public string FromBroadcasterUserId { get; set; }
     }
 
     public class Transport
@@ -79,5 +83,4 @@ namespace StreamServices.Core
     public class Pagination
     {
     }
-
 }
