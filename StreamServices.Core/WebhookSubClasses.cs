@@ -60,7 +60,6 @@ namespace StreamServices.Core
         public int ViewerCount { get; set; }
     }
 
-
     public class Condition
     {
         [JsonProperty("broadcaster_user_id")]
@@ -80,6 +79,7 @@ namespace StreamServices.Core
         [JsonProperty("secret")]
         public string Secret { get; set; }
     }
+
     public class Pagination
     {
     }
