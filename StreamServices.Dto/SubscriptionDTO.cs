@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace StreamServices.Dto
 {
+    [DebuggerDisplay("{Name} {Type}")]
     public class SubscriptionDto
     {
         [JsonProperty("id")]
@@ -24,6 +26,6 @@ namespace StreamServices.Dto
 
         [JsonProperty("broadcaster_user_id")]
         public string BroadcasterUserId { get; set; }
-
+        public bool IsFromRaid { get; set; }
     }
 }

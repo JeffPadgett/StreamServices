@@ -24,12 +24,12 @@
                     <MudCheckBox @bind-Checked="@streamOnline" Dense="true" Color="Color.Tertiary">Stream Online</MudCheckBox>
                     <MudCheckBox @bind-Checked="@streamOffline" Dense="false" Color="Color.Warning">Stream Offline</MudCheckBox>
                     @*<MudItem xs="12" sm="6" md="4">*@
-                        <MudTextField @bind-Value="streamerName" 
-                            Label="Streamer Name" 
-                            Variant="Variant.Outlined" 
-                            Placeholder="Channel Name..."  
-                            DebounceInterval=500
-                            OnDebounceIntervalElapsed="CheckValidName"/>
+                    <MudTextField @bind-Value="streamerName"
+                                  Label="Streamer Name"
+                                  Variant="Variant.Outlined"
+                                  Placeholder="Channel Name..."
+                                  DebounceInterval=1000
+                                  OnDebounceIntervalElapsed="CheckValidName" />
                     @*</MudItem>*@
                 </MudCardContent>
                 <MudCardActions>
@@ -52,7 +52,7 @@
                     <img src="@foundUser.ProfileImageUrl" />
                 </MudCardContent>
                 <MudCardActions>
-                  @*  <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>*@
+                    @*  <MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>*@
                 </MudCardActions>
             </MudCard>
 
@@ -79,7 +79,31 @@
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel="Namer">@context.Name</MudTd>
-                            <MudTd DataLabel="Type">@context.Type</MudTd>
+                            <MudTd DataLabel="Type">
+                                @if (context.Type == "channel.raid")
+                                {
+                                    <span>
+                                        @context.Type
+                                        @if (@context.IsFromRaid)
+                                        {
+                                            <text>
+                                                (from)
+                                            </text>
+                                        }
+                                        else
+                                        {
+                                            <text>
+                                                (to)
+                                            </text>
+                                        }
+                                    </span>
+                                }
+                                else
+                                {
+                                    @context.Type
+                                }
+
+                            </MudTd>
                             <MudTd DataLabel="Status">@context.Status</MudTd>
                             <MudTd DataLabel="Delete">
                                 <MudIconButton OnClick="((e) => DeleteEventSub(context))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
@@ -112,12 +136,12 @@
 
     bool enableSubmit = false;
 
-      /*
-     * Subscribe - post dto object
-     * GetSubscriptions 
-     * DeleteEventSubsciption -- pass query string param called id with SubEvent Id
-     * CheckUserName - pass string called name with channel name
-     */
+    /*
+       * Subscribe - post dto object
+       * GetSubscriptions
+       * DeleteEventSubsciption -- pass query string param called id with SubEvent Id
+       * CheckUserName - pass string called name with channel name
+       */
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,7 +157,7 @@
         //GetSubscriptions
         //GetSubscriptions
         var results = JsonConvert.DeserializeObject<List<SubscriptionDto>>(await response.Content.ReadAsStringAsync());
-        if(results != null && results.Count > 0)
+        if (results != null && results.Count > 0)
         {
             subscribers = results;
         }
@@ -188,14 +212,14 @@
     {
         var response = await _httpClient.GetAsync($"api/CheckUserName?name={streamerName}");
         var result = JsonConvert.DeserializeObject<TwitchUser>(await response.Content.ReadAsStringAsync());
-        if  (result is not null)
+        if (result is not null)
         {
             foundUser = result;
             enableSubmit = true;
         }
         else
         {
-            foundUser  = new();
+            foundUser = new();
             enableSubmit = false;
         }
         await InvokeAsync(StateHasChanged);

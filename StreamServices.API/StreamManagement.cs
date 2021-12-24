@@ -89,7 +89,7 @@ namespace StreamServices.API
             }
             //dtos.ForEach(x => x.Name = _client.GetFromJsonAsync<TwitchUsers>($"users?id={x.BroadcasterUserId}").GetAwaiter().GetResult().Users[0].Login);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(dtos));
+            return new OkObjectResult(JsonConvert.SerializeObject(dtos.OrderBy(x => x.Name)));
         }
 
         [FunctionName("DeleteEventSubsciption")]
