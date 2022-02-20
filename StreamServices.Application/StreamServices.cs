@@ -70,7 +70,10 @@ namespace StreamServices
             }
             else if (streamData.Subscription.Type == "stream.online")
             {
-                return $"{streamData.Event.BroadcasterUserName} is now live! " + "https://www.twitch.tv/" + streamData.Event.BroadcasterUserName;
+                string broadcasterUrl = "https://www.twitch.tv/" + streamData.Event.BroadcasterUserName;
+                string message = $"{streamData.Event.BroadcasterUserName} is now live! {broadcasterUrl} " +
+                    $"@Discription: {streamData.Event.}";
+                return message;
             }
             else if (streamData.Subscription.Type == "channel.follow")
             {
@@ -123,8 +126,5 @@ namespace StreamServices
 
             return BitConverter.ToString(hmacBytes).Replace("-", "").ToLower();
         }
-
     }
-
-
 }
