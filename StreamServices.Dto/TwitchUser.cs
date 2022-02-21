@@ -27,7 +27,7 @@ namespace StreamServices.Dto
         public string Description { get; set; }
 
         [JsonProperty("profile_image_url")]
-        public Uri ProfileImageUrl { get; set; } //TODO
+        public Uri ProfileImageUrl { get; set; }
 
         [JsonProperty("offline_image_url")]
         public Uri OfflineImageUrl { get; set; }

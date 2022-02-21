@@ -142,6 +142,7 @@ namespace StreamServices.API
             return new OkObjectResult(JsonConvert.SerializeObject(user));
         }
 
+
         private void AddAuthHeaderToTwichClient(HttpClient httpClient, string accessToken)
         {
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");

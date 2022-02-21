@@ -1,17 +1,12 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StreamServices.Core;
 using StreamServices.Core.Models;
-using StreamServices.Dto;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -21,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace StreamServices
 {
-    public class StreamServices 
+    public class StreamServices
     {
 
         [FunctionName("DiscordNotificationProcessor")]
@@ -62,7 +57,7 @@ namespace StreamServices
             }
         }
 
-        private string SetDiscordMessage(StreamStatusJson streamData)
+        private async Task<string> SetDiscordMessage(StreamStatusJson streamData)
         {
             if (streamData.Subscription.Type == "stream.offline")
             {
@@ -71,8 +66,15 @@ namespace StreamServices
             else if (streamData.Subscription.Type == "stream.online")
             {
                 string broadcasterUrl = "https://www.twitch.tv/" + streamData.Event.BroadcasterUserName;
-                string message = $"{streamData.Event.BroadcasterUserName} is now live! {broadcasterUrl} " +
-                    $"@Discription: {streamData.Event.}";
+                //Make an HTTP call to twitch so we get additional user data. 
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync($"https://api.twitch.tv/helix/channels?broadcaster_id=" + streamData.Event.BroadcasterUserId);
+                }
+
+
+                string message = $"{streamData.Event.BroadcasterUserName} is now live! {broadcasterUrl} "
+                    //$"@Discription: {streamData.Event.}";
                 return message;
             }
             else if (streamData.Subscription.Type == "channel.follow")
@@ -81,7 +83,7 @@ namespace StreamServices
             }
             else if (streamData.Subscription.Type == "channel.raid")
             {
-                return $"{streamData.Event.FromBroadcasterUserName} just raided {streamData.Event.ToBroadcasterUserName}. They now have {streamData.Event.ViewerCount.ToString()} total viewers.";
+                return $"{streamData.Event.FromBroadcasterUserName} just raided {streamData.Event.ToBroadcasterUserName} with {streamData.Event.ViewerCount.ToString()} viewers.";
             }
             else
             {
@@ -126,5 +128,6 @@ namespace StreamServices
 
             return BitConverter.ToString(hmacBytes).Replace("-", "").ToLower();
         }
+
     }
 }
