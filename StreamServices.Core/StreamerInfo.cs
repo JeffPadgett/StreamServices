@@ -5,8 +5,6 @@ using System.Text;
 
 namespace StreamServices.Core
 {
-
-
     public class StreamerInfo
     {
         [JsonProperty("broadcaster_id")]
@@ -26,5 +24,4 @@ namespace StreamServices.Core
         [JsonProperty("delay")]
         public int Delay { get; set; }
     }
-
 }

@@ -1,12 +1,10 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using StreamServices;
-using StreamServices.API;
-using StreamServices.Core;
+using StreamServices.Application;
 using System;
 
 [assembly: FunctionsStartup(typeof(Startup))]
-namespace StreamServices.API
+namespace StreamServices.Application
 {
     public sealed class Startup : FunctionsStartup
     {
@@ -18,8 +16,6 @@ namespace StreamServices.API
                 option.DefaultRequestHeaders.Add("Accept", "application/json");
                 option.DefaultRequestHeaders.Add("Client-ID", Environment.GetEnvironmentVariable("TwitchClientId"));
             ;});
-
-            builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
         }
     }
 }

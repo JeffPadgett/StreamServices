@@ -18,6 +18,11 @@ namespace StreamServices
 {
     public class StreamServices
     {
+        private readonly HttpClient _client;
+        public StreamServices(IHttpClientFactory httpClientFactory)
+        {
+            _client = httpClientFactory.CreateClient("Twitch");
+        }
 
         [FunctionName("DiscordNotificationProcessor")]
         public async Task<IActionResult> DiscordNotificationProcessor([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, ILogger log)
@@ -30,7 +35,7 @@ namespace StreamServices
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             StreamStatusJson streamData = JsonConvert.DeserializeObject<StreamStatusJson>(requestBody);
 
-            string discordMessage = SetDiscordMessage(streamData);
+            string discordMessage = await SetDiscordMessage(streamData);
             string discordWebhook = SetChatRoom(streamData);
 
             var discordPayload = JsonConvert.SerializeObject(new DiscordChannelNotification(discordMessage));
@@ -67,14 +72,13 @@ namespace StreamServices
             {
                 string broadcasterUrl = "https://www.twitch.tv/" + streamData.Event.BroadcasterUserName;
                 //Make an HTTP call to twitch so we get additional user data. 
-                using (var client = new HttpClient())
-                {
-                    var response = await client.GetAsync($"https://api.twitch.tv/helix/channels?broadcaster_id=" + streamData.Event.BroadcasterUserId);
-                }
 
+                var response = await _client.GetAsync($"https://api.twitch.tv/helix/channels?broadcaster_id=" + streamData.Event.BroadcasterUserId);
+                var userInfo = JsonConvert.DeserializeObject<StreamerInfo>(await response.Content.ReadAsStringAsync());
 
-                string message = $"{streamData.Event.BroadcasterUserName} is now live! {broadcasterUrl} "
-                    //$"@Discription: {streamData.Event.}";
+                string message = $"{streamData.Event.BroadcasterUserName} is now live! {broadcasterUrl} " +
+                    $"@Discription: {userInfo.Title}" +
+                    $"@Catagory {userInfo.GameName}";
                 return message;
             }
             else if (streamData.Subscription.Type == "channel.follow")
